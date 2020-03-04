@@ -813,14 +813,14 @@ compelling reason, so..."
         :ni [C-return]   #'+org/insert-item-below
         :ni [C-S-return] #'+org/insert-item-above
         ;; navigate table cells (from insert-mode)
-        :i "C-l" (general-predicate-dispatch 'org-end-of-line
-                   (org-at-table-p) 'org-table-next-field)
-        :i "C-h" (general-predicate-dispatch 'org-beginning-of-line
-                   (org-at-table-p) 'org-table-previous-field)
-        :i "C-k" (general-predicate-dispatch 'org-up-element
-                   (org-at-table-p) '+org/table-previous-row)
-        :i "C-j" (general-predicate-dispatch 'org-down-element
-                   (org-at-table-p) 'org-table-next-row)
+        ;; :i "C-l" (general-predicate-dispatch 'org-end-of-line
+        ;;            (org-at-table-p) 'org-table-next-field)
+        ;; :i "C-h" (general-predicate-dispatch 'org-beginning-of-line
+        ;;            (org-at-table-p) 'org-table-previous-field)
+        ;; :i "C-k" (general-predicate-dispatch 'org-up-element
+        ;;            (org-at-table-p) '+org/table-previous-row)
+        ;; :i "C-j" (general-predicate-dispatch 'org-down-element
+        ;;            (org-at-table-p) 'org-table-next-row)
         ;; moving/(de|pro)moting subtress & expanding tables (prepend/append columns/rows)
         :ni "C-S-l" #'org-shiftright
         :ni "C-S-h" #'org-shiftleft
