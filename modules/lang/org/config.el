@@ -171,7 +171,7 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
   (setq org-src-preserve-indentation t  ; use native major-mode indentation
         org-src-tab-acts-natively t     ; we do this ourselves
         ;; You don't need my permission (just be careful, mkay?)
-        org-confirm-babel-evaluate nil
+        org-confirm-babel-evaluate t
         org-link-elisp-confirm-function nil
         ;; Show src buffer in popup, and don't monopolize the frame
         org-src-window-setup 'other-window
@@ -182,7 +182,7 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
   (add-to-list 'org-src-lang-modes '("md" . markdown))
 
   ;; I prefer C-c C-c over C-c ' (more consistent)
-  (define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
+  ;; (define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
 
   (defadvice! +org-fix-newline-and-indent-in-src-blocks-a ()
     "Mimic `newline-and-indent' in src blocks w/ lang-appropriate indentation."
@@ -575,7 +575,7 @@ between the two."
         "o" #'org-set-property
         "p" #'org-priority
         "q" #'org-set-tags-command
-        "s" #'org-schedule
+        ;; "s" #'org-schedule
         "t" #'org-todo
         "T" #'org-todo-list
         (:prefix ("a" . "attachments")
@@ -884,8 +884,9 @@ compelling reason, so..."
   org-capture
   :preface
   ;; Change org defaults (should be set before org loads)
-  (setq org-directory "~/org/"
-        org-attach-id-dir ".attach/"
+  (setq org-directory "~/Notes/"
+        ;; 默认的挺好
+        ;; org-attach-id-dir ".attach/"
         org-publish-timestamp-directory (concat doom-cache-dir "org-timestamps/")
         org-preview-latex-image-directory (concat doom-cache-dir "org-latex/"))
 
