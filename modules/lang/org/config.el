@@ -172,7 +172,7 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
         org-src-tab-acts-natively t     ; we do this ourselves
         ;; You don't need my permission (just be careful, mkay?)
         org-confirm-babel-evaluate t
-        org-link-elisp-confirm-function nil
+        ;; org-link-elisp-confirm-function nil
         ;; Show src buffer in popup, and don't monopolize the frame
         org-src-window-setup 'other-window
         ;; Our :lang common-lisp module uses sly, so...
@@ -350,7 +350,8 @@ underlying, modified buffer. This fixes that."
 (defun +org-init-attachments-h ()
   "Sets up org's attachment system."
   ;; Centralized attachments directory
-  (setq org-attach-id-dir (doom-path org-directory org-attach-id-dir)
+  ;; 这个坚决改掉
+  (setq ;; org-attach-id-dir (doom-path org-directory org-attach-id-dir)
         ;; Store a link to attachments when they are attached
         org-attach-store-link-p t
         ;; Inherit attachment properties from parent nodes
@@ -594,6 +595,9 @@ between the two."
           "u" #'org-attach-url
           "s" #'org-attach-set-directory
           "S" #'org-attach-sync
+          "c" #'org-download-screenshot
+          ;; "x" #'org-download-delete   ; delete annotated image link
+          ;; "y" #'org-download-yank
           (:when (featurep! +dragndrop)
             "c" #'org-download-screenshot
             "y" #'org-download-yank))
@@ -887,8 +891,7 @@ compelling reason, so..."
   :preface
   ;; Change org defaults (should be set before org loads)
   (setq org-directory "~/Notes/"
-        ;; 默认的挺好
-        ;; org-attach-id-dir ".attach/"
+        org-attach-id-dir "data/" ;; 默认的挺好
         org-publish-timestamp-directory (concat doom-cache-dir "org-timestamps/")
         org-preview-latex-image-directory (concat doom-cache-dir "org-latex/"))
 
@@ -954,9 +957,9 @@ compelling reason, so..."
   :config
   ;; Global ID state means we can have ID links anywhere. This is required for
   ;; `org-brain', however.
-  (setq org-id-track-globally t
-        org-id-locations-file (expand-file-name ".orgids" org-directory)
-        org-id-locations-file-relative t)
+  ;; (setq org-id-track-globally t
+  ;;       org-id-locations-file (expand-file-name ".orgids" org-directory)
+  ;;       org-id-locations-file-relative t)
 
   ;; HACK `org-id' doesn't check if `org-id-locations-file' exists or is
   ;;      writeable before trying to read/write to it.
