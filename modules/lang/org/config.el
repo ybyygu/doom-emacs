@@ -182,6 +182,7 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
   (add-to-list 'org-src-lang-modes '("md" . markdown))
 
   ;; I prefer C-c C-c over C-c ' (more consistent)
+  ;; C-c C-c是很多mode中常用的键, 很容易产生冲突
   ;; (define-key org-src-mode-map (kbd "C-c C-c") #'org-edit-src-exit)
 
   (defadvice! +org-fix-newline-and-indent-in-src-blocks-a ()
@@ -528,9 +529,10 @@ between the two."
   ;; `doom/forward-to-last-non-comment-or-eol', but with more org awareness.
   (setq org-special-ctrl-a/e t)
 
-  (setq org-M-RET-may-split-line nil
-        ;; insert new headings after current subtree rather than inside it
-        org-insert-heading-respect-content t)
+  ;; 我还是习惯org默认的行为, Alt-RET时不用管上下文
+  ;; (setq org-M-RET-may-split-line nil
+  ;;       ;; insert new headings after current subtree rather than inside it
+  ;;       org-insert-heading-respect-content t)
 
   (add-hook! 'org-tab-first-hook
              #'+org-yas-expand-maybe-h
@@ -595,7 +597,7 @@ between the two."
           (:when (featurep! +dragndrop)
             "c" #'org-download-screenshot
             "y" #'org-download-yank))
-        (:prefix ("b" . "tables")
+        (:prefix ("b" . "org-bable/org-table")
           "-" #'org-table-insert-hline
           "a" #'org-table-align
           "c" #'org-table-create-or-convert-from-region
