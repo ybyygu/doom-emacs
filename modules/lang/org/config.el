@@ -831,8 +831,8 @@ compelling reason, so..."
         ;; more intuitive RET keybinds
         :i [return] #'org-return-indent
         :i "RET"    #'org-return-indent
-        :n [return] #'+org/dwim-at-point
-        :n "RET"    #'+org/dwim-at-point
+        :n [return] #'gwp/dwim-at-point ; 改为自定义版
+        :n "RET"    #'gwp/dwim-at-point ; 改为自定义版
         ;; more vim-esque org motion keys (not covered by evil-org-mode)
         :m "]h"  #'org-forward-heading-same-level
         :m "[h"  #'org-backward-heading-same-level
