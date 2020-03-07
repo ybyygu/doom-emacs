@@ -601,7 +601,7 @@ between the two."
           (:when (featurep! +dragndrop)
             "c" #'org-download-screenshot
             "y" #'org-download-yank))
-        (:prefix ("b" . "org-bable/org-table")
+        (:prefix ("B" . "org-table")
           "-" #'org-table-insert-hline
           "a" #'org-table-align
           "c" #'org-table-create-or-convert-from-region
