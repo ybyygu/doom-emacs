@@ -6,10 +6,7 @@
   ;; Minibuffer
   (define-key! evil-ex-completion-map
     "C-a" #'evil-beginning-of-line
-    "C-b" #'evil-backward-char
-    "C-s" (if (featurep! :completion ivy)
-              #'counsel-minibuffer-history
-            #'helm-minibuffer-history))
+    "C-b" #'evil-backward-char)
 
   (define-key! :keymaps +default-minibuffer-maps
     [escape] #'abort-recursive-edit
@@ -42,19 +39,11 @@
                  (and (featurep! :completion company +tng)
                       (+company-has-completion-p))
                  #'+company/complete)
-      :n [tab] (general-predicate-dispatch nil
-                 (and (featurep! :editor fold)
-                      (save-excursion (end-of-line) (invisible-p (point))))
-                 #'+fold/toggle
-                 (fboundp 'evil-jump-item)
-                 #'evil-jump-item)
       :v [tab] (general-predicate-dispatch nil
                  (and (bound-and-true-p yas-minor-mode)
                       (or (eq evil-visual-selection 'line)
                           (not (memq (char-after) (list ?\( ?\[ ?\{ ?\} ?\] ?\))))))
-                 #'yas-insert-snippet
-                 (fboundp 'evil-jump-item)
-                 #'evil-jump-item)
+                 #'yas-insert-snippet)
 
       ;; Smarter newlines
       :i [remap newline] #'newline-and-indent  ; auto-indent on newline
@@ -483,6 +472,14 @@
         :desc "View search"                  "v" #'org-search-view
         :desc "Org export to clipboard"        "y" #'+org/export-to-clipboard
         :desc "Org export to clipboard as RTF" "Y" #'+org/export-to-clipboard-as-rich-text
+
+        (:when (featurep! :lang org +roam)
+          (:prefix ("r" . "roam")
+            :desc "Org Roam"         "r" #'org-roam
+            :desc "Switch to buffer" "b" #'org-roam-switch-to-buffer
+            :desc "Insert"           "i" #'org-roam-insert
+            :desc "Find file"        "f" #'org-roam-find-file
+            :desc "Show graph"       "g" #'org-roam-graph-show))
 
         (:when (featurep! :lang org +journal)
           (:prefix ("j" . "journal")

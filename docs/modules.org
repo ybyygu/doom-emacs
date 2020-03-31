@@ -107,7 +107,7 @@ Modules that bring support for a language or group of languages to Emacs.
 + [[file:../modules/lang/fsharp/README.org][fsharp]] - TODO
 + [[file:../modules/lang/fstar/README.org][fstar]] - F* support
 + [[file:../modules/lang/go/README.org][go]] =+lsp= - TODO
-+ [[file:../modules/lang/haskell/README.org][haskell]] =+dante +intero +lsp= - TODO
++ [[file:../modules/lang/haskell/README.org][haskell]] =+dante +ghcide +lsp +intero= - TODO
 + hy - TODO
 + [[file:../modules/lang/idris/README.org][idris]] - TODO
 + java =+meghanada +lsp= - TODO
@@ -122,7 +122,7 @@ Modules that bring support for a language or group of languages to Emacs.
 + [[file:../modules/lang/nim/README.org][nim]] - TODO
 + nix - TODO
 + [[file:../modules/lang/ocaml/README.org][ocaml]] =+lsp= - TODO
-+ [[file:../modules/lang/org/README.org][org]] =+brain +dragndrop +gnuplot +hugo +ipython +journal +jupyter +pandoc +pomodoro +present= - TODO
++ [[file:../modules/lang/org/README.org][org]] =+brain +dragndrop +gnuplot +hugo +ipython +journal +jupyter +pandoc +pomodoro +present +roam= - TODO
 + [[file:../modules/lang/perl/README.org][perl]] - TODO
 + [[file:../modules/lang/php/README.org][php]] =+lsp= - TODO
 + plantuml - TODO
@@ -136,6 +136,7 @@ Modules that bring support for a language or group of languages to Emacs.
 + scala =+lsp= - TODO
 + [[file:../modules/lang/scheme/README.org][scheme]] - TODO
 + [[file:../modules/lang/sh/README.org][sh]] =+fish +lsp= - TODO
++ [[file:../modules/lang/sml/README.org][sml]] - TODO
 + [[file:../modules/lang/solidity/README.org][solidity]] - TODO
 + swift =+lsp= - TODO
 + terra - TODO
@@ -190,7 +191,7 @@ Aesthetic modules that affect the Emacs interface or user experience.
 + [[file:../modules/ui/neotree/README.org][neotree]] - TODO
 + [[file:../modules/ui/ophints/README.org][ophints]] - TODO
 + [[file:../modules/ui/popup/README.org][popup]] =+all +defaults= - Makes temporary/disposable windows less intrusive
-+ pretty-code - TODO
++ [[file:../modules//ui/pretty-code/README.org][pretty-code]] =+fira +hasklig +iosevka +pragmata-pro= - TODO
 + [[file:../modules/ui/tabs/README.org][tabs]] - TODO
 + treemacs - TODO
 + [[file:../modules/ui/unicode/README.org][unicode]] - TODO
