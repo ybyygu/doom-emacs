@@ -574,7 +574,7 @@ between the two."
         "i" #'org-toggle-item
         "I" #'org-toggle-inline-images
         "n" #'org-store-link
-        "o" #'org-set-property
+        "P" #'org-set-property
         "p" #'org-priority
         "q" #'org-set-tags-command
         ;; "s" #'org-schedule
