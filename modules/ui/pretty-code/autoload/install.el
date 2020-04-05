@@ -57,20 +57,19 @@ If PREFIX is nil, will prompt whether or not to download. NAME is informational
 only. URL-FORMAT is a format string that should be a url and have a single %s,
 which is expanded for each font in FONTS-ALIST. FONTS-ALIST should be the
 filename of each font. It is used as the source and destination filename."
-  (or prefix
-      (yes-or-no-p
-       (format "This will download and install the %s fonts, are you
-sure you want to do this?" name))
-      (user-error "Aborted"))
+  (unless (or prefix
+              (yes-or-no-p
+               (format "This will download and install the %s fonts, continue?"
+                       name)))
+    (user-error "Aborted"))
   (let* ((font-dest
-          (pcase window-system
-            (`x
-             (expand-file-name
-              "/fonts/" (or (getenv "XDG_DATA_HOME")
-                            (concat (getenv "HOME") "/.local/share"))))
-            ((or `mac `ns)
-             (expand-file-name "~/Library/Fonts/" ))))
-         (known-dest? (stringp font-dest))
+          (cond (IS-LINUX
+                 (expand-file-name
+                  "fonts/" (or (getenv "XDG_DATA_HOME")
+                               "~/.local/share")))
+                (IS-MAC
+                 (expand-file-name "~/Library/Fonts/"))))
+         (known-dest-p (stringp font-dest))
          (font-dest (or font-dest (read-directory-name "Font installation directory: " "~/"))))
     (unless (file-directory-p font-dest)
       (mkdir font-dest t))
@@ -78,13 +77,12 @@ sure you want to do this?" name))
       (url-copy-file (format url-format font)
                      (expand-file-name font font-dest)
                      t))
-    (when known-dest?
+    (when known-dest-p
       (message "Font downloaded, updating font cache... <fc-cache -f -v> ")
-      (shell-command-to-string (format "fc-cache -f -v")))
-    (message "Successfully %s `%s' fonts to `%s'!%s"
-             (if known-dest? "installed" "downloaded")
-             name
-             font-dest)))
+      (shell-command-to-string "fc-cache -f -v"))
+    (message "Successfully %s `%s' fonts to `%s'!"
+             (if known-dest-p "installed" "downloaded")
+             name font-dest)))
 
 ;;;###autoload
 (defun +pretty-code/install-patched-font (font-name &optional prefix)
@@ -95,6 +93,6 @@ When PREFIX is non-nil, ignore the prompt and just install it."
           "Install font: "
           (mapcar #'car +pretty-code-font-alist))))
   (if-let (font-files (cdr (assoc font-name +pretty-code-font-alist)))
-      (cl-destructuring-bind (&keys url files) font-files
-        (+pretty-code--install-font prefix font-name url font-files))
+      (cl-destructuring-bind (&key url files) font-files
+        (+pretty-code--install-font prefix font-name url files))
     (user-error "%S is not a valid font")))

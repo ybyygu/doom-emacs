@@ -3,23 +3,37 @@
 
 (use-package! org-roam
   :commands (org-roam
-             org-roam-insert
+             org-roam-capture
+             org-roam-date
              org-roam-find-file
+             org-roam-graph-show
+             org-roam-insert
              org-roam-switch-to-buffer
-             org-roam-graph-show)
+             org-roam-today
+             org-roam-tomorrow
+             org-roam-yesterday)
+  :preface
+  ;; Set this to nil so we can later detect whether the user has set a custom
+  ;; directory for it, and default to `org-directory' if they haven't.
+  (defvar org-roam-directory nil)
   :init
   (map! :after org
         :map org-mode-map
         :localleader
         :prefix ("m" . "org-roam")
-        "m" #'org-roam
-        "i" #'org-roam-insert
         "b" #'org-roam-switch-to-buffer
         "f" #'org-roam-find-file
         "g" #'org-roam-graph-show
-        "i" #'org-roam-insert)
+        "i" #'org-roam-insert
+        "m" #'org-roam
+        (:prefix ("d" . "by date")
+          :desc "Arbitrary date" "d" #'org-roam-date
+          :desc "Today"          "t" #'org-roam-today
+          :desc "Tomorrow"       "m" #'org-roam-tomorrow
+          :desc "Yesterday"      "y" #'org-roam-yesterday))
   :config
-  (setq org-roam-directory org-directory)
+  (unless org-roam-directory
+    (setq org-roam-directory org-directory))
   (org-roam-mode +1))
 
 
