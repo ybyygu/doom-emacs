@@ -11,8 +11,8 @@
   :mode ("\\.rs$" . rustic-mode)
   :commands rustic-run-cargo-command rustic-cargo-outdated
   :init
-  (after! org-src
-    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  ;; (after! org-src
+  ;;   (add-to-list 'org-src-lang-modes '("rust" . rustic)))
   :config
   (set-docsets! 'rustic-mode "Rust")
   (set-popup-rule! "^\\*rustic-compilation" :vslot -1)
