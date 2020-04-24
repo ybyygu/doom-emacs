@@ -85,7 +85,8 @@
 
   ;; Clean up after magit by killing leftover magit buffers and reverting
   ;; affected buffers (or at least marking them as need-to-be-reverted).
-  (define-key magit-status-mode-map [remap magit-mode-bury-buffer] #'+magit/quit)
+  ;; 这会导致org buffer闪烁
+  ;; (define-key magit-status-mode-map [remap magit-mode-bury-buffer] #'+magit/quit)
 
   ;; Close transient with ESC
   (define-key transient-map [escape] #'transient-quit-one))
