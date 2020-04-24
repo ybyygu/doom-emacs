@@ -90,7 +90,9 @@ control in buffers."
                             (eq major-mode 'magit-status-mode)))
                         (window-list)))
     (mapc #'+magit--kill-buffer (magit-mode-get-buffers))
-    (+magit-mark-stale-buffers-h)))
+    ;; 解决magit-status退出时org buffer闪烁的问题
+    ;; (+magit-mark-stale-buffers-h)))
+    ))
 
 (defun +magit--kill-buffer (buf)
   "TODO"
