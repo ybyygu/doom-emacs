@@ -583,7 +583,10 @@ between the two."
         [remap doom/forward-to-last-non-comment-or-eol] #'org-end-of-line
 
         :localleader
+        "#" #'org-update-statistics-cookies
         "'" #'org-edit-special
+        "*" #'org-ctrl-c-star
+        "+" #'org-ctrl-c-minus
         "," #'org-switchb
         "." #'org-goto
         (:when (featurep! :completion ivy)
@@ -593,7 +596,6 @@ between the two."
           "." #'helm-org-in-buffer-headings
           "/" #'helm-org-agenda-files-headings)
         "A" #'org-archive-subtree
-        "d" #'org-deadline
         "e" #'org-export-dispatch
         "f" #'org-footnote-new
         "h" #'org-toggle-heading
@@ -629,24 +631,38 @@ between the two."
         (:prefix ("B" . "org-table")
           "-" #'org-table-insert-hline
           "a" #'org-table-align
+          "b" #'org-table-blank-field
           "c" #'org-table-create-or-convert-from-region
+          "dc" #'org-table-delete-column
+          "dr" #'org-table-kill-row
           "e" #'org-table-edit-field
+          "f" #'org-table-edit-formulas
           "h" #'org-table-field-info
+          "s" #'org-table-sort-lines
+          "r" #'org-table-recalculate
+          "R" #'org-table-recalculate-buffer-tables
           (:when (featurep! +gnuplot)
             "p" #'org-plot/gnuplot))
         (:prefix ("c" . "clock")
-          "c" #'org-clock-in
-          "C" #'org-clock-out
+          "c" #'org-clock-cancel
           "d" #'org-clock-mark-default-task
           "e" #'org-clock-modify-effort-estimate
           "E" #'org-set-effort
-          "l" #'org-clock-in-last
           "g" #'org-clock-goto
           "G" (λ! (org-clock-goto 'select))
-          "r" #'org-clock-report
-          "x" #'org-clock-cancel
+          "i" #'org-clock-in
+          "I" #'org-clock-in-last
+          "o" #'org-clock-out
+          "r" #'org-resolve-clocks
+          "R" #'org-clock-report
+          "t" #'org-evaluate-time-range
           "=" #'org-clock-timestamps-up
           "-" #'org-clock-timestamps-down)
+        (:prefix ("d" . "date/deadline")
+          "d" #'org-deadline
+          "s" #'org-schedule
+          "t" #'org-time-stamp
+          "T" #'org-time-stamp-inactive)
         (:prefix ("g" . "goto")
           "g" #'org-goto
           (:when (featurep! :completion ivy)
@@ -663,12 +679,13 @@ between the two."
           "x" #'org-capture-goto-last-stored)
         (:prefix ("l" . "links")
           "c" #'org-cliplink
+          "d" #'+org/remove-link
+          "i" #'org-id-store-link
           "l" #'org-insert-link
           "L" #'org-insert-all-links
           "s" #'org-store-link
           "S" #'org-insert-last-stored-link
-          "i" #'org-id-store-link
-          "d" #'+org/remove-link)
+          "t" #'org-toggle-link-display)
         (:prefix ("r" . "refile")
           "." #'+org/refile-to-current-file
           "c" #'+org/refile-to-running-clock
