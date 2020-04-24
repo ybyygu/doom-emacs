@@ -1,4 +1,4 @@
-;;; lang/org/contrib/noter.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/noter.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +noter)
 
 (use-package! org-noter

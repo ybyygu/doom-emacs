@@ -1,4 +1,4 @@
-;;; gwp/magit/autoload.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/magit/autoload.el -*- lexical-binding: t; -*-
 
 ;; HACK Magit complains loudly when it can't determine its own version, which is
 ;;      the case when magit is built through straight. The warning is harmless,

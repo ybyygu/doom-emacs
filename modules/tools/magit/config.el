@@ -1,4 +1,4 @@
-;;; tools/magit/config.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/magit/config.el -*- lexical-binding: t; -*-
 
 (use-package! magit
   :commands magit-file-delete

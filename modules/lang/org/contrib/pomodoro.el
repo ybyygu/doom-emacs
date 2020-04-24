@@ -1,4 +1,4 @@
-;;; lang/org/contrib/pomodoro.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/pomodoro.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +pomodoro)
 
 (after! org-pomodoro

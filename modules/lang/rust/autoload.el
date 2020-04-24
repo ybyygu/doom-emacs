@@ -1,4 +1,4 @@
-;;; lang/rust/autoload.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/rust/autoload.el -*- lexical-binding: t; -*-
 
 ;; TODO (defun +rust/run-cargo () (interactive))
 

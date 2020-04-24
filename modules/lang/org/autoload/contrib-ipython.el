@@ -1,4 +1,4 @@
-;;; lang/org/autoload/contrib-ipython.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/contrib-ipython.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +ipython)
 
 ;;;###autoload

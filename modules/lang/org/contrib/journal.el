@@ -1,4 +1,4 @@
-;;; lang/org/contrib/journal.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/journal.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +journal)
 
 (use-package! org-journal

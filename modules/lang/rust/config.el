@@ -1,4 +1,4 @@
-;;; lang/rust/config.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/rust/config.el -*- lexical-binding: t; -*-
 
 (after! projectile
   (add-to-list 'projectile-project-root-files "Cargo.toml"))

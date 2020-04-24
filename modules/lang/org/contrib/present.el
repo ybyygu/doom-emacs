@@ -1,4 +1,4 @@
-;;; lang/org/contrib/present.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/present.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +present)
 
 (defvar +org-present-text-scale 6

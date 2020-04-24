@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
-;;; lang/org/packages.el
+;;; ~/.doom.d/modules/gwp/org/packages.el
 
 ;; Prevent built-in Org from playing into the byte-compilation of
 ;; `org-plus-contrib'.

@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-tables.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-tables.el -*- lexical-binding: t; -*-
 
 ;;
 ;;; Row/Column traversal

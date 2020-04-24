@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t; no-byte-compile: t; -*-
-;;; lang/org/doctor.el
+;;; ~/.doom.d/modules/gwp/org/doctor.el
 
 (when (featurep! +gnuplot)
   (unless (executable-find "gnuplot")

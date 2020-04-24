@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-export.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-export.el -*- lexical-binding: t; -*-
 
 (defun +org--yank-html-buffer (buffer)
   (with-current-buffer buffer

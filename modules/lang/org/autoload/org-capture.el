@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-capture.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-capture.el -*- lexical-binding: t; -*-
 
 (defvar org-capture-initial)
 

@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-avy.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-avy.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun +org-headline-avy ()

@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
-;;; lang/rust/packages.el
+;;; ~/.doom.d/modules/gwp/rust/packages.el
 
 (package! rustic :pin "61032eacf0")
 (unless (featurep! +lsp)

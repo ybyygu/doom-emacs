@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-refile.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-refile.el -*- lexical-binding: t; -*-
 
 ;; REVIEW These are all proof-of-concept. Refactor me!
 

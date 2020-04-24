@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org-link.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org-link.el -*- lexical-binding: t; -*-
 
 (defun +org--relpath (path root)
   (if (and buffer-file-name (file-in-directory-p buffer-file-name root))

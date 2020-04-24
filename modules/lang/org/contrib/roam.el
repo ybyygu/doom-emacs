@@ -1,4 +1,4 @@
-;;; lang/org/contrib/roam.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/roam.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +roam)
 
 (use-package! org-roam

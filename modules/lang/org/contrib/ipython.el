@@ -1,4 +1,4 @@
-;;; lang/org/contrib/babel.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/babel.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +ipython)
 
 (use-package! ob-ipython

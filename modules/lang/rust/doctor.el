@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t; no-byte-compile: t; -*-
-;;; lang/rust/doctor.el
+;;; ~/.doom.d/modules/gwp/rust/doctor.el
 
 (assert! (or (not (featurep! +lsp))
              (featurep! :tools lsp))

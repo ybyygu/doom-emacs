@@ -1,4 +1,4 @@
-;;; lang/org/autoload/org.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/autoload/org.el -*- lexical-binding: t; -*-
 
 ;;
 ;;; Helpers

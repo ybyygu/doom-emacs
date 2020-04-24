@@ -1,4 +1,4 @@
-;;; lang/org/contrib/jupyter.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/jupyter.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +jupyter)
 
 (use-package! ob-jupyter

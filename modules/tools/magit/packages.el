@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
-;;; tools/magit/packages.el
+;;; ~/.doom.d/modules/gwp/magit/packages.el
 
 (when (package! magit :pin "0f1234e785")
   (when (featurep! +forge)

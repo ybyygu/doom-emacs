@@ -1,4 +1,4 @@
-;;; lang/org/contrib/dragndrop.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/dragndrop.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! +dragndrop)
 
 (use-package! org-download

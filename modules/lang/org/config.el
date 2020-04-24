@@ -1,4 +1,4 @@
-;;; lang/org/config.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/config.el -*- lexical-binding: t; -*-
 
 (defvar +org-babel-mode-alist
   '((cpp . C)
