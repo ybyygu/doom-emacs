@@ -368,12 +368,11 @@ underlying, modified buffer. This fixes that."
 (defun +org-init-attachments-h ()
   "Sets up org's attachment system."
   ;; Centralized attachments directory
-  ;; 这个坚决改掉
-  (setq ;; org-attach-id-dir (doom-path org-directory org-attach-id-dir)
-        ;; Store a link to attachments when they are attached
-        org-attach-store-link-p t
-        ;; Inherit attachment properties from parent nodes
-        org-attach-use-inheritance t)
+  (unless org-attach-id-dir
+    ;; (setq org-attach-id-dir (expand-file-name ".attach/" org-directory)))
+    (setq org-attach-id-dir "data/"))
+  (setq org-attach-store-link-p t     ; store link when attaching files
+        org-attach-use-inheritance t) ; inherit attachment properties from parent nodes
   (after! projectile
     (add-to-list 'projectile-globally-ignored-directories org-attach-id-dir)))
 
@@ -399,15 +398,15 @@ underlying, modified buffer. This fixes that."
             '("wolfram"     . "https://wolframalpha.com/input/?i=%s")
             '("doom-repo"   . "https://github.com/hlissner/doom-emacs/%s"))
 
-  (+org-def-link "org" org-directory)
-  (+org-def-link "doom" doom-emacs-dir)
-  (+org-def-link "doom-docs" doom-docs-dir)
-  (+org-def-link "doom-modules" doom-modules-dir)
+  (+org-define-basic-link "org" 'org-directory)
+  (+org-define-basic-link "doom" 'doom-emacs-dir)
+  (+org-define-basic-link "doom-docs" 'doom-docs-dir)
+  (+org-define-basic-link "doom-modules" 'doom-modules-dir)
 
   ;; Allow inline image previews of http(s)? urls or data uris
-  (org-link-set-parameters "http"  :image-data-fun #'+org-image-link)
-  (org-link-set-parameters "https" :image-data-fun #'+org-image-link)
-  (org-link-set-parameters "img"   :image-data-fun #'+org-inline-data-image)
+  (org-link-set-parameters "http"  :image-data-fun #'+org-http-image-data-fn)
+  (org-link-set-parameters "https" :image-data-fun #'+org-http-image-data-fn)
+  (org-link-set-parameters "img"   :image-data-fun #'+org-inline-image-data-fn)
 
   ;; Add support for youtube links + previews
   (require 'org-yt nil t))
@@ -939,9 +938,8 @@ compelling reason, so..."
   org-capture
   :preface
   ;; Change org defaults (should be set before org loads)
-  (setq org-directory "~/Notes/"
-        org-attach-id-dir "data/" ;; 默认的挺好
-        org-publish-timestamp-directory (concat doom-cache-dir "org-timestamps/")
+  (defvar org-attach-id-dir nil) ; set later
+  (setq org-publish-timestamp-directory (concat doom-cache-dir "org-timestamps/")
         org-preview-latex-image-directory (concat doom-cache-dir "org-latex/"))
 
   ;; Make most of the default modules opt-in, because I sincerely doubt most
