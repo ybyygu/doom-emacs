@@ -4,7 +4,7 @@
   ;; NOTE SPC u replaces C-u as the universal argument.
 
   ;; Minibuffer
-  (define-key! evil-ex-completion-map
+  (define-key! :keymaps '(evil-ex-completion-map evil-ex-search-keymap)
     "C-a" #'evil-beginning-of-line
     "C-b" #'evil-backward-char
     "C-f" #'evil-forward-char
@@ -22,10 +22,6 @@
 
   (when (featurep! :editor evil +everywhere)
     (define-key! :keymaps +default-minibuffer-maps
-      "C-f"    #'forward-word
-      "C-b"    #'backward-word
-      "M-f"    #'forward-char
-      "M-b"    #'backward-char
       "C-j"    #'next-line
       "C-k"    #'previous-line
       "C-S-j"  #'scroll-up-command
@@ -194,9 +190,9 @@
 
 ;;; :ui
 (map! (:when (featurep! :ui popup)
-        :n "C-`"   #'+popup/toggle
-        :n "C-~"   #'+popup/raise
-        :g "C-x p" #'+popup/other)
+        "C-`"   #'+popup/toggle
+        "C-~"   #'+popup/raise
+        "C-x p" #'+popup/other)
 
       (:when (featurep! :ui workspaces)
         :n "C-t"   #'+workspace/new
