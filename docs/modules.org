@@ -116,7 +116,7 @@ Modules that bring support for a language or group of languages to Emacs.
 + [[file:../modules/lang/javascript/README.org][javascript]] =+lsp= - JavaScript, TypeScript, and CoffeeScript support
 + julia =+lsp= - TODO
 + kotlin =+lsp+= - TODO
-+ [[file:../modules/lang/latex/README.org][latex]] =+latexmk +cdlatex +fold= - TODO
++ [[file:../modules/lang/latex/README.org][latex]] =+latexmk +cdlatex +fold +lsp= - TODO
 + lean - TODO
 + [[file:../modules/lang/ledger/README.org][ledger]] - TODO
 + lua =+moonscript= - TODO
@@ -129,7 +129,7 @@ Modules that bring support for a language or group of languages to Emacs.
 + [[file:../modules/lang/php/README.org][php]] =+lsp= - TODO
 + plantuml - TODO
 + purescript - TODO
-+ [[file:../modules/lang/python/README.org][python]] =+lsp +pyenv +conda= - TODO
++ [[file:../modules/lang/python/README.org][python]] =+lsp +pyenv +conda +poetry= - TODO
 + qt - TODO
 + racket - TODO
 + [[file:../modules/lang/rest/README.org][rest]] - TODO

@@ -7,7 +7,9 @@
   (define-key! evil-ex-completion-map
     "C-a" #'evil-beginning-of-line
     "C-b" #'evil-backward-char
-    "C-f" #'evil-forward-char)
+    "C-f" #'evil-forward-char
+    "C-j" #'next-complete-history-element
+    "C-k" #'previous-complete-history-element)
 
   (define-key! :keymaps +default-minibuffer-maps
     [escape] #'abort-recursive-edit
@@ -22,7 +24,7 @@
     (define-key! :keymaps +default-minibuffer-maps
       "C-f"    #'forward-word
       "C-b"    #'backward-word
-      "M-f"    #'foward-char
+      "M-f"    #'forward-char
       "M-b"    #'backward-char
       "C-j"    #'next-line
       "C-k"    #'previous-line

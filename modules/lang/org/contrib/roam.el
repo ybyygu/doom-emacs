@@ -40,7 +40,7 @@
           :desc "Tomorrow"       "m" #'org-roam-dailies-tomorrow
           :desc "Yesterday"      "y" #'org-roam-dailies-yesterday))
   :config
-  (setq org-roam-directory (expand-file-name (or org-roam-directory "")
+  (setq org-roam-directory (expand-file-name (or org-roam-directory "roam")
                                              org-directory)
         org-roam-verbose nil  ; https://youtu.be/fn4jIlFwuLU
         org-roam-buffer-no-delete-other-windows t ; make org-roam buffer sticky
@@ -53,6 +53,16 @@
         (or (featurep! :completion helm +fuzzy)
             (featurep! :completion ivy +fuzzy)))
 
+  ;; HACK On first invocation, `org-roam-db-build-cache' builds the cache with a
+  ;;      list of unresolved file paths. If those are symlinks, you will later
+  ;;      end up with duplicate entries in your roam DB (e.g. after
+  ;;      `org-roam-capture'ing to an existing file).
+  ;; REVIEW When jethrokuan/org-roam#518 is merged
+  (defadvice! +org-roam-resolve-symlinks-a (args)
+    :filter-args #'org-roam--list-files
+    (setcar args (file-truename (car args)))
+    args)
+
   ;; Normally, the org-roam buffer doesn't open until you explicitly call
   ;; `org-roam'. If `+org-roam-open-buffer-on-find-file' is non-nil, the
   ;; org-roam buffer will be opened for you when you use `org-roam-find-file'
@@ -61,6 +71,7 @@
     (defun +org-roam-open-buffer-maybe-h ()
       (and +org-roam-open-buffer-on-find-file
            (memq 'org-roam-buffer--update-maybe post-command-hook)
+           (not (window-parameter nil 'window-side)) ; don't proc for popups
            (not (eq 'visible (org-roam-buffer--visibility)))
            (with-current-buffer (window-buffer)
              (org-roam-buffer--get-create)))))
