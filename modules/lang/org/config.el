@@ -94,9 +94,9 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
         org-entities-user
         '(("flat"  "\\flat" nil "" "" "266D" "♭")
           ("sharp" "\\sharp" nil "" "" "266F" "♯"))
-        org-fontify-done-headline t
-        org-fontify-quote-and-verse-blocks t
-        org-fontify-whole-heading-line t
+        ;; org-fontify-done-headline t
+        ;; org-fontify-quote-and-verse-blocks t
+        ;; org-fontify-whole-heading-line t
         org-footnote-auto-label 'plain
         org-hide-leading-stars t
         org-hide-leading-stars-before-indent-mode t
@@ -411,9 +411,9 @@ underlying, modified buffer. This fixes that."
   (+org-define-basic-link "doom-modules" 'doom-modules-dir)
 
   ;; Allow inline image previews of http(s)? urls or data uris
-  (org-link-set-parameters "http"  :image-data-fun #'+org-http-image-data-fn)
-  (org-link-set-parameters "https" :image-data-fun #'+org-http-image-data-fn)
-  (org-link-set-parameters "img"   :image-data-fun #'+org-inline-image-data-fn)
+  ;; (org-link-set-parameters "http"  :image-data-fun #'+org-http-image-data-fn)
+  ;; (org-link-set-parameters "https" :image-data-fun #'+org-http-image-data-fn)
+  ;; (org-link-set-parameters "img"   :image-data-fun #'+org-inline-image-data-fn)
 
   ;; Add support for youtube links + previews
   (require 'org-yt nil t))
@@ -999,7 +999,7 @@ compelling reason, so..."
              #'+org-init-babel-lazy-loader-h
              #'+org-init-capture-defaults-h
              #'+org-init-capture-frame-h
-             #'+org-init-custom-links-h
+             ;; #'+org-init-custom-links-h
              #'+org-init-export-h
              #'+org-init-habit-h
              #'+org-init-hacks-h
