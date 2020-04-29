@@ -26,6 +26,9 @@
       "C-k"    #'previous-line
       "C-S-j"  #'scroll-up-command
       "C-S-k"  #'scroll-down-command)
+    (define-key! :states 'insert :keymaps +default-minibuffer-maps
+      "C-j"    #'next-line
+      "C-k"    #'previous-line)
     (define-key! read-expression-map
       "C-j" #'next-line-or-history-element
       "C-k" #'previous-line-or-history-element)))
@@ -490,7 +493,7 @@
             :desc "Switch to buffer" "b" #'org-roam-switch-to-buffer
             :desc "Org Roam Capture" "c" #'org-roam-capture
             :desc "Find file"        "f" #'org-roam-find-file
-            :desc "Show graph"       "g" #'org-roam-graph-show
+            :desc "Show graph"       "g" #'org-roam-graph
             :desc "Insert"           "i" #'org-roam-insert
             :desc "Org Roam"         "r" #'org-roam
             (:prefix ("d" . "by date")
