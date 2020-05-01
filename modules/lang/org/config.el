@@ -120,9 +120,6 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
         org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
 
-  ;; Fontify latex blocks and entities, but not natively -- that's too slow
-  (setq org-highlight-latex-and-related '(latex script entities))
-
   (plist-put org-format-latex-options :scale 1.5) ; larger previews
   (add-hook! 'doom-load-theme-hook
     (defun +org-refresh-latex-background-h ()
@@ -543,11 +540,9 @@ current workspace (and clean them up)."
   ;;      upstream (if ever).
   (defadvice! +org--fix-inline-images-for-imagemagick-users-a (orig-fn &rest args)
     :around #'org-display-inline-images
-    (cl-letf* ((old-create-image (symbol-function #'create-image))
-               ((symbol-function #'create-image)
-                (lambda (file-or-data &optional type data-p &rest props)
-                  (let ((type (if (plist-get props :width) type)))
-                    (apply old-create-image file-or-data type data-p props)))))
+    (letf! (defun create-image (file-or-data &optional type data-p &rest props)
+             (let ((type (if (plist-get props :width) type)))
+               (apply create-image file-or-data type data-p props)))
       (apply orig-fn args)))
 
   (defadvice! +org--fix-inconsistent-uuidgen-case-a (uuid)
@@ -820,11 +815,14 @@ compelling reason, so..."
 (use-package! org-crypt ; built-in
   :commands org-encrypt-entries org-encrypt-entry org-decrypt-entries org-decrypt-entry
   :hook (org-reveal-start . org-decrypt-entry)
+  :preface
+  ;; org-crypt falls back to CRYPTKEY property then `epa-file-encrypt-to', which
+  ;; is a better default than the empty string `org-crypt-key' defaults to.
+  (defvar org-crypt-key nil)
   :config
-  (add-hook! 'org-mode-hook
-    (add-hook 'before-save-hook 'org-encrypt-entries nil t))
   (add-to-list 'org-tags-exclude-from-inheritance "crypt")
-  (setq org-crypt-key user-mail-address))
+  (add-hook! 'org-mode-hook
+    (add-hook 'before-save-hook 'org-encrypt-entries nil t)))
 
 
 (use-package! org-clock ; built-in
