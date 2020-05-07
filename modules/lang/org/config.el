@@ -4,6 +4,7 @@
   '((cpp . C)
     (C++ . C)
     (D . C)
+    (elisp . emacs-lisp)
     (sh . shell)
     (bash . shell)
     (matlab . octave)
@@ -374,7 +375,10 @@ underlying, modified buffer. This fixes that."
     (unless org-attach-id-dir
       (setq org-attach-id-dir "data/"))
     (after! projectile
-      (add-to-list 'projectile-globally-ignored-directories org-attach-id-dir))))
+      (add-to-list 'projectile-globally-ignored-directories org-attach-id-dir)))
+
+  ;; Add inline image previews for attachment links
+  (org-link-set-parameters "attachment" :image-data-fun #'+org-inline-image-data-fn))
 
 
 (defun +org-init-custom-links-h ()
@@ -796,6 +800,7 @@ compelling reason, so..."
   :config
   ;; Make leading stars truly invisible, by rendering them as spaces!
   (setq org-superstar-leading-bullet ?\s
+        org-superstar-leading-fallback ?\s
         org-hide-leading-stars nil)
   ;; Don't do anything special for item bullets or TODOs by default; these slow
   ;; down larger org buffers.
