@@ -713,12 +713,12 @@ between the two."
         :localleader
         "d" #'org-agenda-deadline
         (:prefix ("c" . "clock")
-          "c" #'org-agenda-clock-in
-          "C" #'org-agenda-clock-out
+          "c" #'org-agenda-clock-cancel
           "g" #'org-agenda-clock-goto
+          "i" #'org-agenda-clock-in
+          "o" #'org-agenda-clock-out
           "r" #'org-agenda-clockreport-mode
-          "s" #'org-agenda-show-clocking-issues
-          "x" #'org-agenda-clock-cancel)
+          "s" #'org-agenda-show-clocking-issues)
         "q" #'org-agenda-set-tags
         "r" #'org-agenda-refile
         "s" #'org-agenda-schedule
@@ -1030,6 +1030,16 @@ compelling reason, so..."
 
   :config
   (setq org-archive-subtree-save-file-p t) ; save target buffer after archiving
+
+  ;; Autoload all these commands that org-attach doesn't autoload itself
+  (use-package! org-attach
+    :commands (org-attach-new
+               org-attach-open
+               org-attach-open-in-emacs
+               org-attach-reveal-in-emacs
+               org-attach-url
+               org-attach-set-directory
+               org-attach-sync))
 
   ;; Global ID state means we can have ID links anywhere. This is required for
   ;; `org-brain', however.
