@@ -16,7 +16,11 @@
         ;; Don't autosave repo buffers. This is too magical, and saving can
         ;; trigger a bunch of unwanted side-effects, like save hooks and
         ;; formatters. Trust us to know what we're doing.
-        magit-save-repository-buffers nil)
+        magit-save-repository-buffers nil
+        ;; Magit runs git *a lot*. Having to scan your PATH so many times can
+        ;; add up with each invokation, especially on Catalina (macOS) or
+        ;; Windows, so we resolve it once.
+        magit-git-executable (executable-find magit-git-executable))
 
   (defadvice! +magit-revert-repo-buffers-deferred-a (&rest _)
     :after '(magit-checkout magit-branch-and-checkout)
@@ -28,6 +32,10 @@
     (+magit-mark-stale-buffers-h))
   ;; ...then refresh the rest only when we switch to them, not all at once.
   (add-hook 'doom-switch-buffer-hook #'+magit-revert-buffer-maybe-h)
+
+  ;; Center the target file, because it's poor UX to have it at the bottom of
+  ;; the window after invoking `magit-status-here'.
+  (advice-add #'magit-status-here :after #'doom-recenter-a)
 
   ;; The default location for git-credential-cache is in
   ;; ~/.cache/git/credential. However, if ~/.git-credential-cache/ exists, then

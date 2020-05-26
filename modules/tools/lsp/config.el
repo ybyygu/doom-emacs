@@ -15,9 +15,6 @@ working on that project after closing the last buffer.")
   :commands lsp-install-server
   :init
   (setq lsp-session-file (concat doom-etc-dir "lsp-session"))
-  ;; Don't prompt the user for the project root every time we open a new
-  ;; lsp-worthy file, instead, try to guess it with projectile.
-  (setq lsp-auto-guess-root t)
   ;; Auto-kill LSP server after last workspace buffer is killed.
   (setq lsp-keep-workspace-alive nil)
   ;; Let `flycheck-check-syntax-automatically' determine this.
@@ -54,6 +51,8 @@ working on that project after closing the last buffer.")
   (set-lookup-handlers! 'lsp-mode :async t
     :documentation #'lsp-describe-thing-at-point
     :definition #'lsp-find-definition
+    :implementations #'lsp-find-implementation
+    :type-definition #'lsp-find-type-definition
     :references #'lsp-find-references)
 
   ;; TODO Lazy load these. They don't need to be loaded all at once unless the
@@ -91,6 +90,10 @@ This also logs the resolved project root, if found, so we know where we are."
          ;; development builds of Emacs 27 and above
          (or (not (boundp 'read-process-output-max))
              (setq-local read-process-output-max (* 1024 1024)))
+         ;; REVIEW LSP causes a lot of allocations, with or without Emacs 27+'s
+         ;;        native JSON library, so we up the GC threshold to stave off
+         ;;        GC-induced slowdowns/freezes.
+         (setq-local gcmh-high-cons-threshold (* 2 gcmh-high-cons-threshold))
          (prog1 (lsp-mode 1)
            (setq-local lsp-buffer-uri (lsp--buffer-uri))
            ;; Announce what project root we're using, for diagnostic purposes
@@ -156,18 +159,6 @@ auto-killed (which is a potentially expensive process)."
                        (funcall orig-fn))))
              lsp--cur-workspace))))
 
-  (defadvice! +lsp-prompt-if-no-project-a (session file-name)
-    "Prompt for the project root only if no project was found."
-    :after-until #'lsp--calculate-root
-    (cond ((not lsp-auto-guess-root)
-           nil)
-          ((cl-find-if (lambda (dir)
-                         (and (lsp--files-same-host dir file-name)
-                              (file-in-directory-p file-name dir)))
-                       (lsp-session-folders-blacklist session))
-           nil)
-          ((lsp--find-root-interactively session))))
-
   ;; Don't prompt to restart LSP servers while quitting Emacs
   (add-hook! 'kill-emacs-hook (setq lsp-restart 'ignore)))
 
@@ -189,6 +180,7 @@ auto-killed (which is a potentially expensive process)."
   (when (featurep! +peek)
     (set-lookup-handlers! 'lsp-ui-mode :async t
       :definition 'lsp-ui-peek-find-definitions
+      :implementations 'lsp-ui-peek-find-implementation
       :references 'lsp-ui-peek-find-references)))
 
 

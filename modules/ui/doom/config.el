@@ -27,9 +27,9 @@
   :hook (doom-load-theme . solaire-global-mode)
   :config
   (when (daemonp)
-    (add-hook! 'doom-switch-frame-hook
-      (defun +doom-disable-solaire-mode-maybe-h ()
-        (if (display-graphic-p)
+    (add-hook! '(doom-switch-frame-hook after-make-frame-functions)
+      (defun +doom-disable-solaire-mode-maybe-h (&optional frame)
+        (if (display-graphic-p frame)
             (unless solaire-global-mode
               (solaire-global-mode +1))
           (when solaire-global-mode
@@ -66,8 +66,6 @@
     ;; HACK The fringe cannot have a buffer-local remapping on Emacs <= 26, so
     ;;      we jump through hoops to reset it (globally) whenever it is likely
     ;;      that the fringe will have lost its background color.
-   
-    ;; Prevent color glitches when reloading either DOOM or loading a new theme
     (add-hook! '(doom-load-theme-hook doom-reload-hook) :append
                #'solaire-mode-reset)
 
