@@ -49,7 +49,8 @@ run before `doom-init-modules-hook'. Relevant to `doom-module-init-file'.")
               (evil-goggles     (:ui ophints))
               (tabbar           (:ui tabs)))
     (:app     (email            (:email mu4e))
-              (notmuch          (:email notmuch))))
+              (notmuch          (:email notmuch)))
+    (:lang    (perl             (:lang raku))))
   "A tree alist that maps deprecated modules to their replacement(s).
 
 Each entry is a three-level tree. For example:
@@ -353,6 +354,17 @@ This value is cached. If REFRESH-P, then don't use the cached value."
   (defalias 'use-package-normalize/:magic-minor #'use-package-normalize-mode)
   (defun use-package-handler/:magic-minor (name _ arg rest state)
     (use-package-handle-mode name 'auto-minor-mode-magic-alist arg rest state))
+
+  ;; HACK Fix `:load-path' so it resolves relative paths to the containing file,
+  ;;      rather than `user-emacs-directory'. This is a done as a convenience
+  ;;      for users, wanting to specify a local directory.
+  (defadvice! doom--resolve-load-path-from-containg-file-a (orig-fn label arg &optional recursed)
+    "Resolve :load-path from the current directory."
+    :around #'use-package-normalize-paths
+    ;; `use-package-normalize-paths' resolves paths relative to
+    ;; `user-emacs-directory', so we change that.
+    (let ((user-emacs-directory (if (stringp arg) (dir!))))
+      (funcall orig-fn label arg recursed)))
 
   ;; Adds two keywords to `use-package' to expand its lazy-loading capabilities:
   ;;

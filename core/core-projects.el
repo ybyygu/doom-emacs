@@ -39,16 +39,6 @@ Emacs.")
   :config
   (projectile-mode +1)
 
-  ;; REVIEW Resolve the project root once, when the file/buffer is opened. This
-  ;;        speeds up projectile's project root resolution by leaps, but does
-  ;;        put you at risk of having a stale project root.
-  (setq-hook! '(change-major-mode-after-body-hook
-                ;; In case the user saves the file to a new location
-                after-save-hook
-                ;; ...or makes external changes then returns to Emacs
-                focus-in-hook)
-    projectile-project-root (if default-directory (doom-project-root)))
-
   ;; Projectile runs four functions to determine the root (in this order):
   ;;
   ;; + `projectile-root-local' -> checks the `projectile-project-root' variable
@@ -148,7 +138,7 @@ c) are not valid projectile projects."
     (setq projectile-generic-command
           (concat (format "%s . -0 -H -E .git --color=never --type file --type symlink --follow"
                           doom-projectile-fd-binary)
-                  (if IS-WINDOWS " --path-separator=/"))
+                  (if IS-WINDOWS " --path-separator=//"))
           projectile-git-command projectile-generic-command
           projectile-git-submodule-command nil
           ;; ensure Windows users get fd's benefits
@@ -161,7 +151,7 @@ c) are not valid projectile projects."
                   (cl-loop for dir in projectile-globally-ignored-directories
                            concat " --glob "
                            concat (shell-quote-argument (concat "!" dir)))
-                  (if IS-WINDOWS " --path-separator /"))
+                  (if IS-WINDOWS " --path-separator //"))
           projectile-git-command projectile-generic-command
           projectile-git-submodule-command nil
           ;; ensure Windows users get rg's benefits

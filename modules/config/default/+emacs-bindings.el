@@ -325,7 +325,7 @@
          :desc "Browse pull requests"      "P"   #'forge-browse-pullreqs)
         (:prefix ("l" . "list")
          (:when (featurep! :tools gist)
-          :desc "List gists"               "g"   #'+gist:list)
+          :desc "List gists"               "g"   #'gist-list)
          :desc "List repositories"         "r"   #'magit-list-repositories
          :desc "List submodules"           "s"   #'magit-list-submodules
          :desc "List issues"               "i"   #'forge-list-issues
@@ -369,7 +369,7 @@
 
       ;;; <leader> m --- multiple cursors
       (:when (featurep! :editor multiple-cursors)
-       (:prefix-map ("m" . "multiple cursors")
+       (:prefix-map ("m" . "multiple-cursors")
         :desc "Edit lines"         "l"         #'mc/edit-lines
         :desc "Mark next"          "n"         #'mc/mark-next-like-this
         :desc "Unmark next"        "N"         #'mc/unmark-next-like-this
@@ -448,7 +448,7 @@
         "C-x 4 B"     #'switch-to-buffer-other-window
         (:when (featurep! :completion ivy)
           "C-x 4 b"   #'+ivy/switch-workspace-buffer-other-window))
-      "C-x C-b"     #'ibuffer-list-buffers
+      "C-x C-b"     #'ibuffer
       "C-x K"       #'doom/kill-this-buffer-in-all-windows
 
       ;;; company-mode

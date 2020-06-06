@@ -6,7 +6,8 @@
   (setq lsp-session-file (concat doom-etc-dir "lsp-session"))
   ;; Auto-kill LSP server after last workspace buffer is killed.
   (setq lsp-keep-workspace-alive nil)
-  ;; Let `flycheck-check-syntax-automatically' determine this.
+  ;; Let `flycheck-check-syntax-automatically' determine this. Will be removed
+  ;; soon: https://github.com/emacs-lsp/lsp-mode/pull/1701/files
   (setq lsp-flycheck-live-reporting nil)
   ;; For `lsp-clients'
   (setq lsp-server-install-dir (concat doom-etc-dir "lsp/")
@@ -119,12 +120,15 @@ This also logs the resolved project root, if found, so we know where we are."
         ((or :flymake 't)
          (lsp--flymake-setup))
         (:flycheck
-         (let ((old-checker flycheck-checker))
-           (lsp-flycheck-enable)
-           ;; Ensure file/dir local `flycheck-checker' is respected
-           (when old-checker
-             (setq-local flycheck-checker old-checker)
-             (kill-local-variable 'flycheck-check-syntax-automatically)))))))
+         ;; Ensure file/dir local `flycheck-checker' is respected
+         (unless flycheck-checker
+           (if (flycheck-checker-supports-major-mode-p 'lsp major-mode)
+               (lsp-flycheck-enable)
+             (let ((old-checker (flycheck-get-checker-for-buffer)))
+               (lsp-flycheck-enable)
+               (when old-checker
+                 (flycheck-add-next-checker 'lsp old-checker))))
+           (kill-local-variable 'flycheck-checker))))))
 
   (defvar +lsp--deferred-shutdown-timer nil)
   (defadvice! +lsp-defer-server-shutdown-a (orig-fn &optional restart)
