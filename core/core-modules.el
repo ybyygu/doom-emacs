@@ -119,8 +119,7 @@ non-nil."
       (unless no-config-p
         (maphash (doom-module-loader doom-module-config-file) doom-modules)
         (run-hook-wrapped 'doom-init-modules-hook #'doom-try-run-hook)
-        (load! "config" doom-private-dir t)
-        (load custom-file 'noerror (not doom-debug-mode))))))
+        (load! "config" doom-private-dir t)))))
 
 
 ;;
@@ -239,13 +238,14 @@ those directories. The first returned path is always `doom-private-dir'."
   (append (list doom-private-dir)
           (if module-dirs
               (mapcar (lambda (m) (doom-module-locate-path (car m) (cdr m)))
-                      (doom-files-in (if (listp module-dirs)
-                                         module-dirs
-                                       doom-modules-dirs)
-                                     :map #'doom-module-from-path
-                                     :type 'dirs
-                                     :mindepth 1
-                                     :depth 1))
+                      (delete-dups
+                       (doom-files-in (if (listp module-dirs)
+                                          module-dirs
+                                        doom-modules-dirs)
+                                      :map #'doom-module-from-path
+                                      :type 'dirs
+                                      :mindepth 1
+                                      :depth 1)))
             (cl-loop for plist being the hash-values of doom-modules
                      collect (plist-get plist :path)))
           nil))
