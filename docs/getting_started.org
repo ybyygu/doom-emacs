@@ -243,7 +243,7 @@ to least recommended for Doom (based on compatibility).
 - [[https://github.com/d12frosted/homebrew-emacs-plus][emacs-plus]]:
   #+BEGIN_SRC bash
   brew tap d12frosted/emacs-plus
-  brew install emacs-plus --with-modern-icon-cg433n
+  brew install emacs-plus --with-modern-cg433n-icon
   ln -s /usr/local/opt/emacs-plus/Emacs.app /Applications/Emacs.app
   #+END_SRC
 
@@ -1049,7 +1049,7 @@ shouldn't produce side effects and should be deterministic. Because this file
 gets evaluated in an environment isolated from your interactive session, code
 within should make no assumptions about the current session.
 
-See the "[[*Package management][Package Management]]" section for details.
+See the "[[#package-management][Package Management]]" section for details.
 
 **** =autoload/*.el= OR =autoload.el=
 Functions marked with an autoload cookie (~;;;###autoload~) in these files will
@@ -1276,7 +1276,7 @@ provide tools to make this easier. Here are a few things you can try, first:
   issue may be documented.
 
 + If possible, see if the issue can be reproduced in vanilla Emacs (Emacs
-  without Doom) and/or vanilla Doom (Doom without your private config). [[*Use the sandbox][Doom's
+  without Doom) and/or vanilla Doom (Doom without your private config). [[#testing-in-dooms-sandbox][Doom's
   sandbox can help you check]].
 
 + Ask for help on [[https://discord.gg/qvGgnVx][our Discord server]]. It is the quickest way to get help,
@@ -1309,15 +1309,15 @@ You can also evaluate code with ~eval-expression~ (=M-;= or =SPC ;=).
 *** TODO For Doom Modules, packages, autodefs, etc.
 + ~doom/open-news~ (=SPC h n=) ::
      ...
-+ ~doom/open-manual~ (=SPC h D=) ::
-     ...
-+ ~doom/describe-module~ (=SPC h d=) ::
++ ~doom/help~ (=SPC h d h=) ::
+     Open the index of Doom's manual.
++ ~doom/help-modules~ (=SPC h d m=) ::
      Jumps to a module's documentation.
-+ ~doom/describe-autodefs~ (=SPC h A=) ::
++ ~doom/help-autodefs~ (=SPC h u=) ::
      Jumps to the documentation for an autodef function/macro. These are special
      functions that are always defined, whether or not their containing modules
      are enabled.
-+ ~doom/describe-package~ (=SPC h p=) ::
++ ~doom/help-packages~ (=SPC h p=) ::
      Look up packages that are installed, by whom (what modules) and where jump
      to all the places it is being configured.
 + ~doom/info~ ::
