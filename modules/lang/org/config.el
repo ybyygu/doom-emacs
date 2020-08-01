@@ -74,6 +74,11 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
   (unless org-agenda-files
     (setq org-agenda-files (list org-directory)))
   (setq-default
+   org-agenda-deadline-faces
+   '((1.001 . error)
+     (1.0 . org-warning)
+     (0.5 . org-upcoming-deadline)
+     (0.0 . org-upcoming-distant-deadline))
    ;; Don't monopolize the whole frame just for the agenda
    org-agenda-window-setup 'current-window
    org-agenda-skip-unavailable-files t
@@ -82,7 +87,11 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
    ;; on, for example, a sunday
    org-agenda-span 10
    org-agenda-start-on-weekday nil
-   org-agenda-start-day "-3d"))
+   org-agenda-start-day "-3d"
+   ;; Optimize `org-agenda' by inhibiting extra work while opening agenda
+   ;; buffers in the background. They'll be "restarted" if the user switches to
+   ;; them anyway (see `+org-exclude-agenda-buffers-from-workspace-h')
+   org-agenda-inhibit-startup t))
 
 
 (defun +org-init-appearance-h ()
@@ -93,11 +102,13 @@ Is relative to `org-directory', unless it is absolute. Is used in Doom's default
         org-entities-user
         '(("flat"  "\\flat" nil "" "" "266D" "♭")
           ("sharp" "\\sharp" nil "" "" "266F" "♯"))
+        org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t
         org-fontify-whole-heading-line t
         org-footnote-auto-label 'plain
         org-hide-leading-stars t
         org-image-actual-width nil
+        org-imenu-depth 8
         org-priority-faces
         '((?A . error)
           (?B . warning)
@@ -201,9 +212,26 @@ This forces it to read the background before rendering."
   (defadvice! +org-fix-newline-and-indent-in-src-blocks-a (&optional indent _arg _interactive)
     "Mimic `newline-and-indent' in src blocks w/ lang-appropriate indentation."
     :after #'org-return
-    (when (and indent (org-in-src-block-p t))
+    (when (and indent
+               org-src-tab-acts-natively
+               (org-in-src-block-p t))
       (org-babel-do-in-edit-buffer
        (call-interactively #'indent-for-tab-command))))
+
+  (defadvice! +org-inhibit-mode-hooks-a (orig-fn datum name &optional initialize &rest args)
+    "Prevent potentially expensive mode hooks in `org-babel-do-in-edit-buffer' ops."
+    :around #'org-src--edit-element
+    (apply orig-fn datum name
+           (if (and (eq org-src-window-setup 'switch-invisibly)
+                    (functionp initialize))
+               ;; org-babel-do-in-edit-buffer is used to execute quick, one-off
+               ;; logic in the context of another major mode. Initializing this
+               ;; major mode can be terribly expensive (particular its mode
+               ;; hooks), so we inhibit them.
+               (lambda ()
+                 (quiet! (delay-mode-hooks (funcall initialize))))
+             initialize)
+           args))
 
   ;; Refresh inline images after executing src blocks (useful for plantuml or
   ;; ipython, where the result could be an image)
@@ -422,6 +450,7 @@ relative to `org-directory', unless it is an absolute path."
 
   ;; Add support for youtube links + previews
   (require 'org-yt nil t)
+
   (defadvice! +org-dont-preview-if-disabled-a (&rest _)
     "Make `org-yt' respect `org-display-remote-inline-images'."
     :before-while #'org-yt-image-data-fun
@@ -431,7 +460,8 @@ relative to `org-directory', unless it is an absolute path."
 (defun +org-init-export-h ()
   "TODO"
   (setq org-export-with-smart-quotes t
-        org-html-validation-link nil)
+        org-html-validation-link nil
+        org-latex-prefer-user-labels t)
 
   (when (featurep! :lang markdown)
     (add-to-list 'org-export-backends 'md))
@@ -544,24 +574,25 @@ eldoc string."
 
   (add-hook! 'org-agenda-finalize-hook
     (defun +org-exclude-agenda-buffers-from-workspace-h ()
-      "Prevent temporarily-opened agenda buffers from being associated with the
-current workspace (and clean them up)."
-      (when (and org-agenda-new-buffers (bound-and-true-p persp-mode))
-        (unless org-agenda-sticky
-          (let (persp-autokill-buffer-on-remove)
-            (persp-remove-buffer org-agenda-new-buffers
-                                 (get-current-persp)
-                                 nil)))
-        (dolist (buffer org-agenda-new-buffers)
-          (with-current-buffer buffer
-            ;; HACK Org agenda opens temporary agenda incomplete org-mode
-            ;;      buffers. These are great for extracting agenda information
-            ;;      from, but what if the user tries to visit one of these
-            ;;      buffers? Then we remove it from the to-be-cleaned queue and
-            ;;      restart `org-mode' so they can grow up to be full-fledged
-            ;;      org-mode buffers.
-            (add-hook 'doom-switch-buffer-hook #'+org--restart-mode-h
-                      nil 'local))))))
+      "Prevent temporary agenda buffers being associated with current
+workspace."
+      (when (and org-agenda-new-buffers
+                 (bound-and-true-p persp-mode)
+                 (not org-agenda-sticky))
+        (let (persp-autokill-buffer-on-remove)
+          (persp-remove-buffer org-agenda-new-buffers
+                               (get-current-persp)
+                               nil))))
+    (defun +org-defer-mode-in-agenda-buffers-h ()
+      "Org agenda opens temporary agenda incomplete org-mode buffers.
+These are great for extracting agenda information from, but what if the user
+tries to visit one of these buffers? Then we remove it from the to-be-cleaned
+queue and restart `org-mode' so they can grow up to be full-fledged org-mode
+buffers."
+      (dolist (buffer org-agenda-new-buffers)
+        (with-current-buffer buffer
+          (add-hook 'doom-switch-buffer-hook #'+org--restart-mode-h
+                    nil 'local)))))
 
   (defadvice! +org--exclude-agenda-buffers-from-recentf-a (orig-fn file)
     "Prevent temporarily opened agenda buffers from polluting recentf."
@@ -700,7 +731,8 @@ between the two."
          "e" #'org-clock-modify-effort-estimate
          "E" #'org-set-effort
          "g" #'org-clock-goto
-         "G" (λ! (org-clock-goto 'select))
+         "G" (cmd! (org-clock-goto 'select))
+         "l" #'+org/toggle-last-clock
          "i" #'org-clock-in
          "I" #'org-clock-in-last
          "o" #'org-clock-out
@@ -723,7 +755,7 @@ between the two."
           "g" #'helm-org-in-buffer-headings
           "G" #'helm-org-agenda-files-headings)
          "c" #'org-clock-goto
-         "C" (λ! (org-clock-goto 'select))
+         "C" (cmd! (org-clock-goto 'select))
          "i" #'org-id-goto
          "r" #'org-refile-goto-last-stored
          "v" #'+org/goto-visible
@@ -737,6 +769,12 @@ between the two."
          "s" #'org-store-link
          "S" #'org-insert-last-stored-link
          "t" #'org-toggle-link-display)
+        (:prefix ("P" . "publish")
+         "a" #'org-publish-all
+         "f" #'org-publish-current-file
+         "p" #'org-publish
+         "P" #'org-publish-current-project
+         "s" #'org-publish-sitemap)
         (:prefix ("r" . "refile")
          "." #'+org/refile-to-current-file
          "c" #'+org/refile-to-running-clock
@@ -764,7 +802,6 @@ between the two."
           "d" #'org-priority-down
           "p" #'org-priority
           "u" #'org-priority-up)))
-
 
   (map! :after org-agenda
         :map org-agenda-mode-map
@@ -962,8 +999,8 @@ compelling reason, so..."
         :ni "C-S-k" #'org-shiftup
         :ni "C-S-j" #'org-shiftdown
         ;; more intuitive RET keybinds
-        :i [return] (λ! (org-return t))
-        :i "RET"    (λ! (org-return t))
+        :i [return] (cmd! (org-return t))
+        :i "RET"    (cmd! (org-return t))
         :n [return] #'gwp/dwim-at-point
         :n "RET"    #'gwp/dwim-at-point
         ;; more vim-esque org motion keys (not covered by evil-org-mode)
@@ -1025,7 +1062,9 @@ compelling reason, so..."
   (defvar org-attach-id-dir nil)
 
   (setq org-publish-timestamp-directory (concat doom-cache-dir "org-timestamps/")
-        org-preview-latex-image-directory (concat doom-cache-dir "org-latex/"))
+        org-preview-latex-image-directory (concat doom-cache-dir "org-latex/")
+        ;; Recognize a), A), a., A., etc -- must be set before org is loaded.
+        org-list-allow-alphabetical t)
 
   ;; Make most of the default modules opt-in, because I sincerely doubt most
   ;; users use all of them.
@@ -1090,6 +1129,10 @@ compelling reason, so..."
 
   :config
   (setq org-archive-subtree-save-file-p t) ; save target buffer after archiving
+
+  ;; Prevent modifications made in invisible sections of an org document, as
+  ;; unintended changes can easily go unseen otherwise.
+  (setq org-catch-invisible-edits 'smart)
 
   ;; Global ID state means we can have ID links anywhere. This is required for
   ;; `org-brain', however.

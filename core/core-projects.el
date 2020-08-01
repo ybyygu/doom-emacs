@@ -26,9 +26,11 @@ debian, and derivatives). On most it's 'fd'.")
              projectile-locate-dominating-file)
   :init
   (setq projectile-cache-file (concat doom-cache-dir "projectile.cache")
+        ;; Auto-discovery is slow to do by default. Better to update the list
+        ;; when you need to (`projectile-discover-projects-in-search-path').
         projectile-auto-discover nil
         projectile-enable-caching doom-interactive-p
-        projectile-globally-ignored-files '(".DS_Store" "Icon" "TAGS")
+        projectile-globally-ignored-files '(".DS_Store" "TAGS")
         projectile-globally-ignored-file-suffixes '(".elc" ".pyc" ".o")
         projectile-kill-buffers-filter 'kill-only-files
         projectile-known-projects-file (concat doom-cache-dir "projectile.projects")
@@ -39,6 +41,12 @@ debian, and derivatives). On most it's 'fd'.")
 
   :config
   (projectile-mode +1)
+
+  ;; Auto-discovery on `projectile-mode' is slow and premature. Let's defer it
+  ;; until it's actually needed. Also clean up non-existing projects too!
+  (add-transient-hook! 'projectile-relevant-known-projects
+    (projectile-cleanup-known-projects)
+    (projectile-discover-projects-in-search-path))
 
   ;; Projectile runs four functions to determine the root (in this order):
   ;;
@@ -103,7 +111,9 @@ b) represent blacklisted directories that are too big, change too often or are
    private. (see `doom-projectile-cache-blacklist'),
 c) are not valid projectile projects."
       (when (and (bound-and-true-p projectile-projects-cache)
+                 projectile-enable-caching
                  doom-interactive-p)
+        (projectile-cleanup-known-projects)
         (cl-loop with blacklist = (mapcar #'file-truename doom-projectile-cache-blacklist)
                  for proot in (hash-table-keys projectile-projects-cache)
                  if (or (not (stringp proot))
@@ -165,8 +175,7 @@ And if it's a function, evaluate it."
             ;; it respects .gitignore. This is recommended in the projectile docs.
             (cond
              ((when-let
-                  (bin (if (or (null default-directory)
-                               (file-remote-p default-directory nil t))
+                  (bin (if (ignore-errors (file-remote-p default-directory nil t))
                            (cl-find-if find-exe-fn (list "fdfind" "fd"))
                          doom-projectile-fd-binary))
                 (concat (format "%s . -0 -H -E .git --color=never --type file --type symlink --follow"
