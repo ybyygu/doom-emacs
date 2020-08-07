@@ -91,6 +91,8 @@ possible."
       backup-directory-alist `((".*" . ,(concat doom-cache-dir "backup/"))))
 
 (after! tramp
+  ;; Backing up files on remotes can be incredibly slow and prone to a variety
+  ;; of IO errors. Better to disable it altogether in tramp buffers:
   (add-to-list 'backup-directory-alist (cons tramp-file-name-regexp nil)))
 
 (add-hook! 'after-save-hook
@@ -260,9 +262,12 @@ possible."
   (setq savehist-file (concat doom-cache-dir "savehist"))
   :config
   (setq savehist-save-minibuffer-history t
-        savehist-autosave-interval nil ; save on kill only
-        savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-  (add-hook! 'kill-emacs-hook
+        savehist-autosave-interval nil     ; save on kill only
+        savehist-additional-variables
+        '(kill-ring                        ; persist clipboard
+          mark-ring global-mark-ring       ; persist marks
+          search-ring regexp-search-ring)) ; persist searches
+  (add-hook! 'savehist-save-hook
     (defun doom-unpropertize-kill-ring-h ()
       "Remove text properties from `kill-ring' for a smaller savehist file."
       (setq kill-ring (cl-loop for item in kill-ring
