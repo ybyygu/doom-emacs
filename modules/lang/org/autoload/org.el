@@ -154,7 +154,7 @@ If on a:
 - table-row or a TBLFM: recalculate the table's formulas
 - table-cell: clear it and go into insert mode. If this is a formula cell,
   recaluclate it instead.
-- babel-call: execute the source block
+- babel-call: edit org-src
 - statistics-cookie: update it.
 - latex fragment: toggle it.
 - link: follow it
@@ -243,7 +243,8 @@ If on a:
        (save-excursion (org-update-statistics-cookies arg)))
 
       ((or `src-block `inline-src-block)
-       (org-babel-execute-src-block arg))
+       ;; (org-babel-execute-src-block arg)
+       (org-edit-special))
 
       ((or `latex-fragment `latex-environment)
        (org-latex-preview arg))
