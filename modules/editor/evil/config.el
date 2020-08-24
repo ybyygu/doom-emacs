@@ -53,8 +53,8 @@ directives. By default, this only recognizes C directives.")
 
   ;; Slow this down from 0.02 to prevent blocking in large or folded buffers
   ;; like magit while incrementally highlighting matches.
-  (setq-hook! 'magit-mode-hook evil-ex-hl-update-delay 0.2)
-  (setq-hook! 'so-long-minor-mode-hook evil-ex-hl-update-delay 0.25)
+  (setq-hook! '(magit-mode-hook so-long-minor-mode-hook)
+    evil-ex-hl-update-delay 0.25)
 
   :config
   (evil-select-search-module 'evil-search-module 'evil-search)
@@ -154,6 +154,9 @@ directives. By default, this only recognizes C directives.")
     (when (evil-ex-p)
       (run-at-time 0.1 nil #'helpful-key key-sequence)
       (abort-recursive-edit)))
+
+  ;; Make J (evil-join) remove comment delimiters when joining lines.
+  (advice-add #'evil-join :override #'+evil-join-a)
 
   ;; Make ESC (from normal mode) the universal escaper. See `doom-escape-hook'.
   (advice-add #'evil-force-normal-state :after #'+evil-escape-a)
@@ -373,15 +376,16 @@ directives. By default, this only recognizes C directives.")
 ;;; Keybinds
 
 ;; Keybinds that have no Emacs+evil analogues (i.e. don't exist):
-;;   zq - mark word at point as good word
-;;   zw - mark word at point as bad
 ;;   zu{q,w} - undo last marking
-;; Keybinds that evil define:
-;;   z= - correct flyspell word at point
-;;   ]s - jump to previous spelling error
-;;   [s - jump to next spelling error
 
 (map! :v  "@"     #'+evil:apply-macro
+
+      ;; implement dictionary keybinds
+      ;; evil already defines 'z=' to `ispell-word' = correct word at point
+      :n  "zq"    #'spell-fu-word-add
+      :n  "zw"    #'spell-fu-word-remove
+      :m  "[s"    #'spell-fu-goto-previous-error
+      :m  "]s"    #'spell-fu-goto-next-error
 
       ;; ported from vim-unimpaired
       :n  "] SPC" #'+evil/insert-newline-below

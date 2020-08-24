@@ -155,8 +155,7 @@ pacman -S git emacs ripgrep
 pacman -S fd
 #+END_SRC
 
-The above installs Emacs 26.3 (at the time of writing). To acquire Emacs 27
-[[https://aur.archlinux.org/packages/emacs27-git/][emacs27-git]] is available on the AUR.
+The above installs Emacs 27 (at the time of writing).
 
 **** NixOS
 On NixOS Emacs 26.3 can be installed via ~nix-env -Ai nixos.emacs~, or
@@ -247,8 +246,6 @@ to least recommended for Doom (based on compatibility).
   brew install emacs-plus
   ln -s /usr/local/opt/emacs-plus/Emacs.app /Applications/Emacs.app
   #+END_SRC
-
-  Replace =emacs-plus= with =emacs-plus@27= to install Emacs 27.x instead.
 
 - [[https://bitbucket.org/mituharu/emacs-mac/overview][emacs-mac]] is another acceptable option. It offers slightly better integration
   with macOS, native emojis and better childframe support. However, at the time
