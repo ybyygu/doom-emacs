@@ -11,9 +11,9 @@
   :mode ("\\.rs$" . rustic-mode)
   :commands rustic-run-cargo-command rustic-cargo-outdated
   :init
-  ;; (after! org-src
-  ;;   (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
-  ;;   (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  (after! org-src
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
   :config
   (set-docsets! 'rustic-mode "Rust")
   (set-popup-rule! "^\\*rustic-compilation" :vslot -1)

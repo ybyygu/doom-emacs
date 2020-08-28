@@ -1,4 +1,4 @@
-;;; lang/org/contrib/pretty.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/modules/gwp/org/contrib/pretty.el -*- lexical-binding: t; -*-
 
 (after! org
   (setq org-highlight-latex-and-related '(native script entities)))
