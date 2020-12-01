@@ -488,12 +488,18 @@ advised)."
               (add-hook sym #',fn ,append))))))
 
 (defmacro add-hook-trigger! (hook-var &rest targets)
-  "TODO"
+  "Configure HOOK-VAR to be invoked exactly once after init whenever any of the
+TARGETS are invoked. Once HOOK-VAR gets triggered, it resets to nil.
+
+HOOK-VAR is a quoted hook.
+
+TARGETS is a list of quoted hooks and/or sharp-quoted functions."
   `(let ((fn (intern (format "%s-h" ,hook-var))))
      (fset
       fn (lambda (&rest _)
-           (run-hook-wrapped ,hook-var #'doom-try-run-hook)
-           (set ,hook-var nil)))
+           (when after-init-time
+             (run-hook-wrapped ,hook-var #'doom-try-run-hook)
+             (set ,hook-var nil))))
      (put ,hook-var 'permanent-local t)
      (dolist (on (list ,@targets))
        (if (functionp on)
@@ -670,6 +676,28 @@ set earlier in the ‘setq-local’.  The return value of the
                expr))
         (setq pairs (cdr (cdr pairs))))
       (macroexp-progn (nreverse expr)))))
+
+(eval-when! (version< emacs-version "27.1")
+  ;; DEPRECATED Backported from Emacs 27; earlier verisons don't have REMOTE arg
+  (defun executable-find (command &optional remote)
+    "Search for COMMAND in `exec-path' and return the absolute file name.
+Return nil if COMMAND is not found anywhere in `exec-path'.  If
+REMOTE is non-nil, search on the remote host indicated by
+`default-directory' instead."
+    (if (and remote (file-remote-p default-directory))
+        (let ((res (locate-file
+                    command
+                    (mapcar
+                     (lambda (x) (concat (file-remote-p default-directory) x))
+                     (exec-path))
+                    exec-suffixes 'file-executable-p)))
+          (when (stringp res) (file-local-name res)))
+      ;; Use 1 rather than file-executable-p to better match the
+      ;; behavior of call-process.
+      (let ((default-directory
+              (let (file-name-handler-alist)
+                (file-name-quote default-directory))))
+        (locate-file command exec-path exec-suffixes 1)))))
 
 (provide 'core-lib)
 ;;; core-lib.el ends here
