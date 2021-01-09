@@ -344,9 +344,7 @@ windows, switch to `doom-fallback-buffer'. Otherwise, delegate to original
 
 ;; Expand the minibuffer to fit multi-line text displayed in the echo-area. This
 ;; doesn't look too great with direnv, however...
-(setq resize-mini-windows 'grow-only
-      ;; But don't let the minibuffer grow beyond this size
-      max-mini-window-height 0.15)
+(setq resize-mini-windows 'grow-only)
 
 ;; Typing yes/no is obnoxious when y/n will do
 (fset #'yes-or-no-p #'y-or-n-p)
@@ -549,6 +547,11 @@ windows, switch to `doom-fallback-buffer'. Otherwise, delegate to original
 
 ;;
 ;;; Theme & font
+
+;; Always prioritize the user's themes above the built-in/packaged ones.
+(setq custom-theme-load-path
+      (cons 'custom-theme-directory
+            (remq 'custom-theme-directory custom-theme-load-path)))
 
 ;; Underline looks a bit better when drawn lower
 (setq x-underline-at-descent-line t)
