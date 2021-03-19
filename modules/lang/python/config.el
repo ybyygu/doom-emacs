@@ -27,7 +27,7 @@
       (set-eglot-client! 'python-mode '("Microsoft.Python.LanguageServer"))))
   :config
   (set-repl-handler! 'python-mode #'+python/open-repl :persist t)
-  (set-docsets! 'python-mode "Python 3" "NumPy" "SciPy")
+  (set-docsets! 'python-mode "Python 3" "NumPy" "SciPy" "Pandas")
 
   (set-ligatures! 'python-mode
     ;; Functional
@@ -102,7 +102,7 @@
       (unless (or (bound-and-true-p lsp-mode)
                   (bound-and-true-p eglot--managed-mode)
                   (bound-and-true-p lsp--buffer-deferred)
-                  (not (executable-find python-shell-interpreter)))
+                  (not (executable-find python-shell-interpreter t)))
         (anaconda-mode +1))))
   :config
   (set-company-backend! 'anaconda-mode '(company-anaconda))
@@ -207,7 +207,7 @@
   (set-eval-handler! 'python-mode
     '((:command . (lambda () python-shell-interpreter))
       (:exec (lambda ()
-               (if-let* ((bin (executable-find "pipenv"))
+               (if-let* ((bin (executable-find "pipenv" t))
                          (_ (pipenv-project-p)))
                    (format "PIPENV_MAX_DEPTH=9999 %s run %%c %%o %%s %%a" bin)
                  "%c %o %s %a")))

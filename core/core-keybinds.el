@@ -28,6 +28,8 @@ and Emacs states, and for non-evil users.")
 
 (cond
  (IS-MAC
+  ;; mac-* variables are used by the special emacs-mac build of Emacs by
+  ;; Yamamoto Mitsuharu, while other builds use ns-*.
   (setq mac-command-modifier      'super
         ns-command-modifier       'super
         mac-option-modifier       'meta
@@ -46,6 +48,8 @@ and Emacs states, and for non-evil users.")
                    (not (cl-position 'tab    keys))
                    (not (cl-position 'kp-tab keys))
                    (display-graphic-p)
+                   ;; Fall back if no <C-i> keybind can be found, otherwise
+                   ;; we've broken all pre-existing C-i keybinds.
                    (let ((key
                           (doom-lookup-key
                            (vconcat (cl-subseq keys 0 -1) [C-i]))))

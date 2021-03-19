@@ -1,6 +1,7 @@
 ;;; core-editor.el -*- lexical-binding: t; -*-
 
-(defvar doom-detect-indentation-excluded-modes '(fundamental-mode so-long-mode)
+(defvar doom-detect-indentation-excluded-modes
+  '(fundamental-mode pascal-mode so-long-mode)
   "A list of major modes in which indentation should be automatically
 detected.")
 
@@ -119,7 +120,10 @@ possible."
 
 (add-hook! 'after-save-hook
   (defun doom-guess-mode-h ()
-    "Guess major mode when saving a file in `fundamental-mode'."
+    "Guess major mode when saving a file in `fundamental-mode'.
+
+Likely, something has changed since the buffer was opened. e.g. A shebang line
+or file path may exist now."
     (when (eq major-mode 'fundamental-mode)
       (let ((buffer (or (buffer-base-buffer) (current-buffer))))
         (and (buffer-file-name buffer)
@@ -168,7 +172,7 @@ possible."
 ;; The POSIX standard defines a line is "a sequence of zero or more non-newline
 ;; characters followed by a terminating newline", so files should end in a
 ;; newline. Windows doesn't respect this (because it's Windows), but we should,
-;; since programmers' tools tend to be POSIX compliant.
+;; since programmers' tools tend to be POSIX compliant (and no big deal if not).
 (setq require-final-newline t)
 
 ;; Default to soft line-wrapping in text modes. It is more sensibile for text
@@ -294,15 +298,29 @@ possible."
         savehist-autosave-interval nil     ; save on kill only
         savehist-additional-variables
         '(kill-ring                        ; persist clipboard
+          register-alist                   ; persist macros
           mark-ring global-mark-ring       ; persist marks
           search-ring regexp-search-ring)) ; persist searches
   (add-hook! 'savehist-save-hook
-    (defun doom-unpropertize-kill-ring-h ()
+    (defun doom-savehist-unpropertize-variables-h ()
       "Remove text properties from `kill-ring' for a smaller savehist file."
-      (setq kill-ring (cl-loop for item in kill-ring
-                               if (stringp item)
-                               collect (substring-no-properties item)
-                               else if item collect it)))))
+      (setq kill-ring
+            (mapcar #'substring-no-properties
+                    (cl-remove-if-not #'stringp kill-ring))
+            register-alist
+            (cl-loop for (reg . item) in register-alist
+                     if (stringp item)
+                     collect (cons reg (substring-no-properties item))
+                     else collect (cons reg item))))
+    (defun doom-savehist-remove-unprintable-registers-h ()
+      "Remove unwriteable registers (e.g. containing window configurations).
+Otherwise, `savehist' would discard `register-alist' entirely if we don't omit
+the unwritable tidbits."
+      ;; Save new value in the temp buffer savehist is running
+      ;; `savehist-save-hook' in. We don't want to actually remove the
+      ;; unserializable registers in the current session!
+      (setq-local register-alist
+                  (cl-remove-if-not #'savehist-printable register-alist)))))
 
 
 (use-package! saveplace
@@ -397,6 +415,8 @@ files, so we replace calls to `pp' with the much faster `prin1'."
 (use-package! dtrt-indent
   ;; Automatic detection of indent settings
   :when doom-interactive-p
+  ;; I'm not using `global-dtrt-indent-mode' because it has hard-coded and rigid
+  ;; major mode checks, so I implement it in `doom-detect-indentation-h'.
   :hook ((change-major-mode-after-body read-only-mode) . doom-detect-indentation-h)
   :config
   (defun doom-detect-indentation-h ()
@@ -433,7 +453,6 @@ files, so we replace calls to `pp' with the much faster `prin1'."
                                   (error-message-string e))
                          (message ""))))) ; warn silently
         (funcall orig-fn arg)))))
-
 
 (use-package! helpful
   ;; a better *help* buffer

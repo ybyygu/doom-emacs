@@ -149,8 +149,10 @@ in some cases."
                                     (> (point) bol))
                           (backward-char))
                         (skip-chars-backward " " bol)
-                        (unless (or (eq (char-after) 32) (eolp))
-                          (forward-char))
+                        (or (eq (char-after) 32)
+                            (eolp)
+                            (bolp)
+                            (forward-char))
                         (point)))
                     eol)))
       (list bol bot eot eol))))
@@ -251,7 +253,7 @@ the value of `indent-tab-mode'.
 
 If ARG (universal argument) is non-nil, retab the current buffer using the
 opposite indentation style."
-  (interactive "Pr")
+  (interactive "P\nr")
   (unless (and beg end)
     (setq beg (point-min)
           end (point-max)))

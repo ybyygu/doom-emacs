@@ -48,7 +48,7 @@ Possible values:
 (defvar +doom-dashboard-menu-sections
   '(("Reload last session"
      :icon (all-the-icons-octicon "history" :face 'doom-dashboard-menu-title)
-     :when (cond ((require 'persp-mode nil t)
+     :when (cond ((featurep! :ui workspaces)
                   (file-exists-p (expand-file-name persp-auto-save-fname persp-save-dir)))
                  ((require 'desktop nil t)
                   (file-exists-p (desktop-full-file-name))))
@@ -118,9 +118,7 @@ PLIST can have the following properties:
                               +doom-dashboard-banner-dir)))
     (when (equal (buffer-name) "*scratch*")
       (set-window-buffer nil (doom-fallback-buffer))
-      (if (daemonp)
-          (add-hook 'after-make-frame-functions #'+doom-dashboard-reload-frame-h)
-        (+doom-dashboard-reload)))
+      (+doom-dashboard-reload))
     ;; Ensure the dashboard is up-to-date whenever it is switched to or resized.
     (add-hook 'window-configuration-change-hook #'+doom-dashboard-resize-h)
     (add-hook 'window-size-change-functions #'+doom-dashboard-resize-h)
