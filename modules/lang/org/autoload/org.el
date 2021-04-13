@@ -243,8 +243,9 @@ If on a:
         (`statistics-cookie
          (save-excursion (org-update-statistics-cookies arg)))
 
+        ;; Hacked by ybyygu at 2021-04-13
         ((or `src-block `inline-src-block)
-         (org-babel-execute-src-block arg))
+         (org-edit-special arg))
 
         ((or `latex-fragment `latex-environment)
          (org-latex-preview arg))
